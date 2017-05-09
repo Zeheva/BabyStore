@@ -171,7 +171,7 @@ namespace BabyStore.Controllers
             img.Save(Constants.ProductImagePath + file.FileName);
             if (img.Width > 100)
             {
-                img.Resize(190, img.Height);
+                img.Resize(100, img.Height);
             }
             img.Save(Constants.ProductThumbnailPath + file.FileName);
         }

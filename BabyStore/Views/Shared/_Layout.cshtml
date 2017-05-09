@@ -24,7 +24,8 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("Shop by Category", "Index", "Categories")</li>
                     <li>@Html.RouteLink("View all our Products", "ProductsIndex")</li>
-                    <li>@Html.RouteLink("View all Clothes", "ProductsbyCategory", new { category = "Clothes" })</li>
+                  @*<li>@Html.RouteLink("View all Clothes", "ProductsbyCategory", new { category = "Clothes" })</li>*@
+                    <li>@Html.ActionLink("Manage Images", "Index", "ProductImages")</li>
                 </ul>
                 @using (Html.BeginRouteForm("ProductsIndex", FormMethod.Get, new { @class = "navbar-form navbar-left" }))
                 {
