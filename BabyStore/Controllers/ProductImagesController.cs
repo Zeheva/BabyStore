@@ -50,60 +50,106 @@ namespace BabyStore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Upload(HttpPostedFileBase file)
+        public ActionResult Upload(HttpPostedFileBase[] files)
         {
-            if (file != null)
+            bool allValid = true;
+            string inValidFiles = "";
+
+            //validation that user has entered a file before hitting button
+            if (files[0] != null)
             {
-                if (ValidateFile(file))
+                //check for less then 10 files, max number 
+                if (files.Length <= 10)
                 {
-                    try
+                    foreach (var file in files)
                     {
-                        SaveFileToDisk(file);
+                        if (!ValidateFile(file))
+                        {
+                            allValid = false;
+                            inValidFiles += ", " + file.FileName;
+                        }
                     }
-                    catch(Exception)
+                    if (allValid)
                     {
-                        ModelState.AddModelError("FileName", "Sorry an error occurred saving file");
+                        foreach (var file in files)
+                        {
+                            try
+                            {
+                                SaveFileToDisk(file);
+                            }
+                            catch (Exception)
+                            {
+
+                                ModelState.AddModelError("FileName", "Error occurred saving the files to disk, try again");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("FileName", "All files must be a gif, png, jpeg, jpg and less than 2MB in size. The following files" +
+                            inValidFiles + " are not valid");
                     }
                 }
+           
+                //or if he has entered more then 10 files **error handling
                 else
                 {
-                    ModelState.AddModelError("FileName", "File must be gif, png, jpeg, jpg and smaller thne 2mb in size");
+                    ModelState.AddModelError("FileName", "Please upload 10 files only at a time");
                 }
             }
             else
             {
+                //there is no files uploaded add error handling message/ changing modelstate
                 ModelState.AddModelError("FileName", "Please choose a file");
             }
-
             if (ModelState.IsValid)
             {
-                db.ProductImages.Add(new ProductImage { FileName = file.FileName });
-                //updated error handling to support program running during SQL error on saving more then one file name to DB
-                try
-                {
-                    db.SaveChanges();
-                }
-                catch (DbUpdateException ex)
-                {
-                    //sets the inner exception as an sqlexception
-                    SqlException innerException = ex.InnerException.InnerException as SqlException;
-                    //2061 is the sql error for indexing on the same name
-                    if (innerException != null && innerException.Number == 2601)
-                    {
-                        ModelState.AddModelError("FileName", "The file: " + file.FileName +
-                            " already exists in the system. Please delete file and try again to update file.");
-                    }
-                    else
-                    {
-                        //if not one of the upper errors handles all other errors when saving to database
-                        ModelState.AddModelError("FileName", "Error has occured saving file to database, try again");
-                    }
-                    return View();
+                bool duplicates = false;
+                bool otherDbError = false;
+                string duplicateFiles = "";
 
+                foreach (var file in files)
+                {
+                    var prodcutToAdd = new ProductImage { FileName = file.FileName };
+                    try
+                    {
+                        db.ProductImages.Add(prodcutToAdd);
+                        db.SaveChanges();
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        //set innerException to the DbUpdateException as SqlException (looking for duplicate index code error)
+                        SqlException innerException = ex.InnerException.InnerException as SqlException;
+                        //if there is an innerException and the code is 2601 (sql number for duplicate index)
+                        if (innerException != null && innerException.Number == 2601)
+                        {
+                            //create record of file names that were duplicates
+                            duplicateFiles += "," + file.FileName;
+                            duplicates = true;
+                        }
+                        else
+                        {
+                            //if error was not due to duplicate files uploated pop flag to true
+                            otherDbError = true;
+                        }
+                        
+                    }
+                }
+                //checking flags and error handling on them
+                if (duplicates)
+                {
+                    ModelState.AddModelError("FileName", "All files uploaded except the files" + duplicateFiles + ", which already exist in the system. " +
+                        "please delete them and try again to add new files");
+                    return View();
+                }
+                else if (otherDbError)
+                {
+                    ModelState.AddModelError("FileName", "Sorry an unknown Error has occurred during saving of the files, please adjust and try again");
+                    return View();
                 }
                 return RedirectToAction("Index");
             }
-
+            //return input view not redirect to index for viewing
             return View();
         }
 
