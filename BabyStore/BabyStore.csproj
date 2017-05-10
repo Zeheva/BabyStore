@@ -202,6 +202,10 @@
     <Compile Include="Migrations\201705081517171_ProdcutImages.Designer.cs">
       <DependentUpon>201705081517171_ProdcutImages.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705101528344_FileNameAttrabutesUpdated.cs" />
+    <Compile Include="Migrations\201705101528344_FileNameAttrabutesUpdated.Designer.cs">
+      <DependentUpon>201705101528344_FileNameAttrabutesUpdated.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Category.cs" />
@@ -310,6 +314,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705081517171_ProdcutImages.resx">
       <DependentUpon>201705081517171_ProdcutImages.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705101528344_FileNameAttrabutesUpdated.resx">
+      <DependentUpon>201705101528344_FileNameAttrabutesUpdated.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

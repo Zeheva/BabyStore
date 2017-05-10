@@ -9,7 +9,8 @@ using System.Web.Mvc;
 using BabyStore.DAL;
 using BabyStore.Models;
 using System.Web.Helpers;
-
+using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 
 namespace BabyStore.Controllers
 {
@@ -77,7 +78,29 @@ namespace BabyStore.Controllers
             if (ModelState.IsValid)
             {
                 db.ProductImages.Add(new ProductImage { FileName = file.FileName });
-                db.SaveChanges();
+                //updated error handling to support program running during SQL error on saving more then one file name to DB
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (DbUpdateException ex)
+                {
+                    //sets the inner exception as an sqlexception
+                    SqlException innerException = ex.InnerException.InnerException as SqlException;
+                    //2061 is the sql error for indexing on the same name
+                    if (innerException != null && innerException.Number == 2601)
+                    {
+                        ModelState.AddModelError("FileName", "The file: " + file.FileName +
+                            " already exists in the system. Please delete file and try again to update file.");
+                    }
+                    else
+                    {
+                        //if not one of the upper errors handles all other errors when saving to database
+                        ModelState.AddModelError("FileName", "Error has occured saving file to database, try again");
+                    }
+                    return View();
+
+                }
                 return RedirectToAction("Index");
             }
 
