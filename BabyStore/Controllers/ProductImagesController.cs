@@ -11,6 +11,7 @@ using BabyStore.Models;
 using System.Web.Helpers;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
+using System.Diagnostics;
 
 namespace BabyStore.Controllers
 {
@@ -54,6 +55,7 @@ namespace BabyStore.Controllers
         {
             bool allValid = true;
             string inValidFiles = "";
+            db.Database.Log = sql => Trace.WriteLine(sql);
 
             //validation that user has entered a file before hitting button
             if (files[0] != null)
@@ -126,6 +128,9 @@ namespace BabyStore.Controllers
                             //create record of file names that were duplicates
                             duplicateFiles += "," + file.FileName;
                             duplicates = true;
+                            //detach the duplicate file from the enitiy context//ensuring that the duplicate error does not get replicated
+                            //on all elements in the enitiy
+                            db.Entry(prodcutToAdd).State = EntityState.Detached;
                         }
                         else
                         {
