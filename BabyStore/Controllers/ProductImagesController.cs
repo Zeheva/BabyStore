@@ -10,6 +10,7 @@ using BabyStore.DAL;
 using BabyStore.Models;
 using System.Web.Helpers;
 
+
 namespace BabyStore.Controllers
 {
     public class ProductImagesController : Controller
@@ -174,6 +175,7 @@ namespace BabyStore.Controllers
                 img.Resize(100, img.Height);
             }
             img.Save(Constants.ProductThumbnailPath + file.FileName);
+            
         }
     }
 }
