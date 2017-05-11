@@ -207,6 +207,10 @@
     <Compile Include="Migrations\201705101528344_FileNameAttrabutesUpdated.Designer.cs">
       <DependentUpon>201705101528344_FileNameAttrabutesUpdated.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705111438279_CreateProductImageMapping.cs" />
+    <Compile Include="Migrations\201705111438279_CreateProductImageMapping.Designer.cs">
+      <DependentUpon>201705111438279_CreateProductImageMapping.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Category.cs" />
@@ -214,6 +218,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\ProductImage.cs" />
+    <Compile Include="Models\ProductImageMapping.cs" />
     <Compile Include="Models\ProductMetaData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -320,6 +325,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705101528344_FileNameAttrabutesUpdated.resx">
       <DependentUpon>201705101528344_FileNameAttrabutesUpdated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705111438279_CreateProductImageMapping.resx">
+      <DependentUpon>201705111438279_CreateProductImageMapping.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
