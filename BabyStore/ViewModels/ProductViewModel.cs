@@ -17,7 +17,7 @@ namespace BabyStore.ViewModels
         public string Name { get; set; }
 
         [Required(ErrorMessage ="The prodcut description can not be blank")]
-        [StringLength(200, MinimumLength = 10, ErrorMessage = "Enter a product description of at least 3 to 200 characters in length")]
+        [StringLength(200, MinimumLength = 10, ErrorMessage = "Enter a product description of at least 10 to 200 characters in length")]
         [RegularExpression(@"^[a-zA-Z0-9'-'\s]*$", ErrorMessage = " Please enter a product name mad eup of letters and numbers only")]
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
