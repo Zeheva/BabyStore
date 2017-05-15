@@ -156,8 +156,25 @@ namespace BabyStore.DAL
             {
                 return HttpNotFound();
             }
-            ViewBag.CategoryID = new SelectList(db.Categories, "ID", "Name", product.CategoryID);
-            return View(product);
+            ProductViewModel viewModel = new ProductViewModel();
+            viewModel.CategoryList = new SelectList(db.Categories, "ID", "Name", product.CategoryID);
+            viewModel.ImageLists = new List<SelectList>();
+            //generate a selectlist for each image currently associated with the product with the current image selected. 
+            foreach(var imageMapping in product.ProductImageMappings.OrderBy(pim => pim.ImageNumber))
+            {
+                viewModel.ImageLists.Add(new SelectList(db.ProductImages, "ID", "FileName", imageMapping.ProductImageID));
+            }
+            //if product does not have max number of images (constants = 5(fornow)) adds the extra no vlaue selectlists to fill in requrierment
+            for (int i = viewModel.ImageLists.Count; i < Constants.NumberOfProductImages; i++)
+            {
+                viewModel.ImageLists.Add(new SelectList(db.ProductImages, "ID", "FlieName"));
+            }
+            viewModel.ID = product.ID;
+            viewModel.Name = product.Name;
+            viewModel.Description = product.Description;
+            viewModel.Price = product.Price;
+
+            return View(viewModel);
         }
 
         // POST: Products/Edit/5
